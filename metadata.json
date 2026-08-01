@@ -1,0 +1,6 @@
+{
+  "name": "Aryan App Store",
+  "description": "A modern, free Android App Store for open-source and legally distributable Android apps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

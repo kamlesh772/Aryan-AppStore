@@ -1,0 +1,122 @@
+{
+  "entities": {
+    "App": {
+      "title": "App",
+      "description": "Android application item listed in the store",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique app identifier or package name slug" },
+        "name": { "type": "string", "description": "App title" },
+        "packageName": { "type": "string", "description": "Android package name (e.g. org.fdroid.fdroid)" },
+        "developer": { "type": "string", "description": "Developer or organization name" },
+        "developerWebsite": { "type": "string", "description": "Official website URL" },
+        "sourceCodeUrl": { "type": "string", "description": "Repository URL (GitHub/GitLab)" },
+        "category": { "type": "string", "description": "App category" },
+        "version": { "type": "string", "description": "App version string" },
+        "size": { "type": "string", "description": "APK file size" },
+        "license": { "type": "string", "description": "Open source license type" },
+        "minAndroid": { "type": "string", "description": "Minimum Android version" },
+        "iconUrl": { "type": "string", "description": "App icon image URL" },
+        "screenshots": { "type": "array", "description": "App screenshot image URLs" },
+        "shortDescription": { "type": "string", "description": "Short overview text" },
+        "fullDescription": { "type": "string", "description": "Detailed description text" },
+        "changelog": { "type": "string", "description": "Release notes" },
+        "downloadUrl": { "type": "string", "description": "Direct APK download link" },
+        "downloadCount": { "type": "number", "description": "Total download count" },
+        "rating": { "type": "number", "description": "Average rating score from 1 to 5" },
+        "reviewCount": { "type": "number", "description": "Total review count" },
+        "featured": { "type": "boolean", "description": "Featured on home page banner" },
+        "isNew": { "type": "boolean", "description": "Newly added tag" },
+        "isVerified": { "type": "boolean", "description": "Verified FOSS build badge" },
+        "isPublished": { "type": "boolean", "description": "Published state toggle for store listing" },
+        "permissions": { "type": "array", "description": "Android permission list" },
+        "createdAt": { "type": "string", "description": "Creation ISO timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update ISO timestamp" }
+      },
+      "required": ["id", "name", "packageName", "developer", "category", "downloadUrl"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Store application category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Category identifier" },
+        "name": { "type": "string", "description": "Category display name" },
+        "iconName": { "type": "string", "description": "Lucide icon identifier" },
+        "description": { "type": "string", "description": "Category description text" },
+        "color": { "type": "string", "description": "Tailwind color class" },
+        "bgGradient": { "type": "string", "description": "Tailwind background gradient class" }
+      },
+      "required": ["id", "name", "description"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "User review for an application",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Review unique identifier" },
+        "appId": { "type": "string", "description": "Parent app ID" },
+        "userId": { "type": "string", "description": "User UID who submitted review" },
+        "userName": { "type": "string", "description": "User display name" },
+        "userAvatar": { "type": "string", "description": "User avatar image URL" },
+        "rating": { "type": "number", "description": "Rating score 1 to 5" },
+        "comment": { "type": "string", "description": "Review comment body" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["id", "appId", "userName", "rating", "comment"]
+    },
+    "Download": {
+      "title": "Download",
+      "description": "APK download activity record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Download record ID" },
+        "appId": { "type": "string", "description": "Downloaded app ID" },
+        "appName": { "type": "string", "description": "Downloaded app title" },
+        "userId": { "type": "string", "description": "User UID or anonymous" },
+        "version": { "type": "string", "description": "Downloaded app version" },
+        "size": { "type": "string", "description": "APK file size" },
+        "timestamp": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["id", "appId", "appName"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth user ID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "User display name" },
+        "photoURL": { "type": "string", "description": "Profile picture URL" },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role permission level" },
+        "favorites": { "type": "array", "description": "List of favorite app IDs" },
+        "createdAt": { "type": "string", "description": "Account registration timestamp" },
+        "updatedAt": { "type": "string", "description": "Last profile update timestamp" }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/apps/{appId}": {
+      "schema": "App",
+      "description": "Applications collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Categories collection"
+    },
+    "/apps/{appId}/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Sub-collection of user reviews for an app"
+    },
+    "/downloads/{downloadId}": {
+      "schema": "Download",
+      "description": "Download tracking logs"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and favorites"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'aryanjain772@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Test connection endpoint
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Apps collection
+    match /apps/{appId} {
+      // Anyone can read apps catalog
+      allow read: if true;
+      
+      // Anyone can create (enables initial auto-seeding of open-source apps when empty) or Admin
+      allow create: if true;
+      allow delete: if isAdmin() || true;
+      
+      // Allow updates (for download count, ratings, reviews, or metadata)
+      allow update: if true;
+
+      // Reviews sub-collection
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if true;
+        allow update, delete: if true;
+      }
+    }
+
+    // Categories collection
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Downloads collection
+    match /downloads/{downloadId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
+    }
+  }
+}
